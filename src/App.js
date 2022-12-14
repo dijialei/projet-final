@@ -1,9 +1,12 @@
 
 import './App.css';
-import AddAbsence from './components/pagedegestion/AddAbsence';
-import ModifyAbsence from './components/pagedegestion/ModifyAbsence';
-import Pagegestion from './components/pagedegestion/Pagegestion';
-import JoursFeries from './components/pagedejoursferies/JoursFeries';
+import Accueil from './components/Accueil';
+import Validation from './components/PageAdmission/Validation';
+import AddAbsence from './components/PageGestion/AddAbsence';
+import ModifyAbsence from './components/PageGestion/ModifyAbsence';
+import Pagegestion from './components/PageGestion/Pagegestion';
+import JoursFeries from './components/PageJoursFeries/JoursFeries';
+import Login from './components/Login/Login';
 
 
 function App() {
@@ -11,7 +14,7 @@ function App() {
 
   return (
     <div className="App">
-    <JoursFeries/>
+    <Login/>
     </div>
   );
 }
