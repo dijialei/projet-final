@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+#tableContainer{
+  height: 400px;
+  
+  overflow-y:scroll;
+  overflow-x:auto;
+}
+#tableContainer tr{
+  height: 18px;
+}

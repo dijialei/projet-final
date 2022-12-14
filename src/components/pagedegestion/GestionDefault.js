@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Gestionrows from "./Gestionrows";
-import './gestiondefault.css'
+//import './gestiondefault.css'
 export default function GestionDefault({setAffichage}){
     const [datatest, setDataTest] = useState([{
         id: crypto.randomUUID(),
