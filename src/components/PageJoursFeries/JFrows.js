@@ -23,7 +23,7 @@ export default function JFrows({ role, data }) {
                 <td>{data.date}</td>
                 <td>{data.type}</td>
                 <td>{data.jour}</td>
-                <td>{data.Contents}</td>
+                <td>{data.libelle}</td>
                 {/* <td><a onClick={()=>setAffichage("modify")} className="btn btn-sm btn-info me-1">✎</a>
                     <a className="btn btn-sm btn-danger">✖︎</a>
                 </td> */}

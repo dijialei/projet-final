@@ -1,6 +1,6 @@
 import JFrows from "./JFrows";
 
-export default function JFuser({ datatest }) {
+export default function JFuser({ joursferies }) {
     return (
         <>
             <div className="container d-flex flex-column align-items-center">
@@ -34,7 +34,7 @@ export default function JFuser({ datatest }) {
                         <tbody>
 
                             {
-                                datatest.map(data => {
+                                joursferies.map(data => {
                                     //console.log(data);
                                     return (
                                         <tr>

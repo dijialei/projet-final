@@ -1,113 +1,65 @@
+import { useEffect, useState } from "react";
 import JFadmin from "./JFadmin";
-import JFrows from "./JFrows";
+
 import JFuser from "./JFuser";
+import axios from "axios";
+import AddJF from "./AddJF";
 
-export default function JoursFeries(){
-    const datatest = [{
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés1"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés2"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés3"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés4"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés5"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés6"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés7"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés8"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés9"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés10"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés11"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés12"
-    },
-    {
-        id:crypto.randomUUID(),
-        date:"02/01/2017",
-        type:"RTT",
-        jour:"lundi",
-        Contents:"jours fériés13"
-    }
-];
+export default function JoursFeries() {
+    const [jfs, setJfs] = useState([]);
+   
+    const urlBackend = "http://127.0.0.1:3001/";
+    const role = "manager";
 
-const role = "manager";
-
-if (role == "user") {
-    return (
-        <JFuser datatest={datatest}/>
-    );    
-}else{
-    return(
-    <JFadmin datatest={datatest} />
+    function fetchJF() {
+        axios.get(urlBackend + 'jourferie').then((res) => {
+            setJfs(res.data);
+        })
+    };
     
-    );
-}
+    const [selectedJour,setSelectedJour] = useState({
+        "_id": "",
+        "date": "",
+        "type": "",
+        "jour": "",
+        "libelle": ""
+    });
+    const initSelected={
+        
+        date: "",
+        type: "",
+        jour: "",
+        libelle: ""
+    };
+    const addJour = {
+        
+        date: "",
+        type: "add",
+        jour: "",
+        libelle: ""
+    }
+    function handleAdd(obj){
+        setSelectedJour(obj);
+    }
+
+
+
+    useEffect(() => { fetchJF() }, []);
+    
+
+    if (selectedJour.type !== "") {
+        return (<AddJF handleAdd={()=>handleAdd(initSelected)} selectedJour={selectedJour} />);
+
+    }else if (role === "user") {
+        return (
+            <JFuser joursferies={jfs} />
+        );
+    } else {
+        return (
+            <JFadmin addJour={addJour} handleAdd={(obj)=>handleAdd(obj)} joursferies={jfs} />
+
+        );
+    }
 
 
 }

@@ -1,9 +1,5 @@
 import JFrows from "./JFrows";
-export default function JFadmin({ datatest }) {
-
-    function hanldleClick(data) {
-        console.log(data);
-    }
+export default function JFadmin({ joursferies,handleAdd ,addJour}) {
 
 
     return (
@@ -40,13 +36,13 @@ export default function JFadmin({ datatest }) {
                         <tbody>
 
                             {
-                                datatest.map(data => {
+                                joursferies.map(data => {
                                     //console.log(data);
                                     return (
-                                        <tr key={data.id}>
+                                        <tr key={data._id}>
                                             <JFrows data={data} />
-                                            <td><a onClick={() => hanldleClick(data)} className="btn btn-sm btn-info me-1">✎</a>
-                                                <a onClick={() => hanldleClick(data)} className="btn btn-sm btn-danger">✖︎</a>
+                                            <td><a  onClick={() => handleAdd(data)} className="btn btn-sm btn-info me-1">✎</a>
+                                                <a onClick={() => handleAdd(data)} className="btn btn-sm btn-danger">✖︎</a>
                                             </td>
                                         </tr>
                                     );
@@ -58,7 +54,7 @@ export default function JFadmin({ datatest }) {
 
                 </div>
                 <div className="d-flex flex-row-reverse align-items-center w-75 mt-5">
-                    <a className="btn btn-sm btn-info ms-2"><span className="material-symbols-outlined">
+                    <a onClick={()=>handleAdd(addJour)} className="btn btn-sm btn-info ms-2"><span className="material-symbols-outlined">
                         add
                     </span>
                     </a>
