@@ -10,6 +10,7 @@ import Login from './components/Login/Login';
 import cookie from 'react-cookies';
 import { useState } from 'react';
 import AddJF from './components/PageJoursFeries/AddJF';
+import ModalDelete from './components/ModalDelete';
 
 
 function App() {

@@ -1,5 +1,12 @@
+import { useState } from "react";
+import ModalDelete from "../ModalDelete";
 import JFrows from "./JFrows";
-export default function JFadmin({ joursferies,handleAdd ,addJour}) {
+export default function JFadmin({ joursferies, handleAdd, addJour, handleDelete }) {
+
+    const [deleteJour,seteleteJour]=useState({});
+    function getDeleteJour(obj){
+        seteleteJour(obj);
+    };
 
 
     return (
@@ -19,7 +26,7 @@ export default function JFadmin({ joursferies,handleAdd ,addJour}) {
                 </div>
                 <div className="roz w-75">
                     <table className='table table-striped table-hover'>
-                    <thead className="table-dark">
+                        <thead className="table-dark">
                             <tr>
                                 <th ><strong>Date</strong></th>
                                 <th ><strong>Type</strong></th>
@@ -32,7 +39,7 @@ export default function JFadmin({ joursferies,handleAdd ,addJour}) {
                 </div>
                 <div id="tableContainer" className="row w-75" >
                     <table className='table table-striped table-hover'>
-                       
+
                         <tbody>
 
                             {
@@ -41,8 +48,8 @@ export default function JFadmin({ joursferies,handleAdd ,addJour}) {
                                     return (
                                         <tr key={data._id}>
                                             <JFrows data={data} />
-                                            <td><a  onClick={() => handleAdd(data)} className="btn btn-sm btn-info me-1">✎</a>
-                                                <a onClick={() => handleAdd(data)} className="btn btn-sm btn-danger">✖︎</a>
+                                            <td><a onClick={() => handleAdd(data)} className="btn btn-sm btn-info me-1">✎</a>
+                                                <a onClick={() => getDeleteJour(data)} className="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" >✖︎</a>
                                             </td>
                                         </tr>
                                     );
@@ -54,13 +61,13 @@ export default function JFadmin({ joursferies,handleAdd ,addJour}) {
 
                 </div>
                 <div className="d-flex flex-row-reverse align-items-center w-75 mt-5">
-                    <a onClick={()=>handleAdd(addJour)} className="btn btn-sm btn-info ms-2"><span className="material-symbols-outlined">
+                    <a onClick={() => handleAdd(addJour)} className="btn btn-sm btn-info ms-2"><span className="material-symbols-outlined">
                         add
                     </span>
                     </a>
                     <h4>Ajouter un jour férié ou RTT Employeur</h4>
                 </div>
-
+                <ModalDelete handleDelete={(obj)=>handleDelete(obj)} deleteJour={deleteJour}  />
             </div>
         </>
     );
