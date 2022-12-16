@@ -38,7 +38,7 @@ export default function JFuser({ datatest }) {
                                     //console.log(data);
                                     return (
                                         <tr>
-                                            <JFrows data={data} />
+                                            <JFrows key={crypto.randomUUID()} data={data} />
                                         </tr>
                                     );
                                 })

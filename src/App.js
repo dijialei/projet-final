@@ -13,7 +13,7 @@ import { useState } from 'react';
 
 function App() {
   //console.log(cookie.load("username"));
-const[ login,setLogin] = useState(false);
+/* const[ login,setLogin] = useState(false);
 if (login || cookie.load("_id")) {
   return(
     <Accueil/>
@@ -25,7 +25,12 @@ if (login || cookie.load("_id")) {
     <Login setLogin={()=>setLogin(true)} />
     </div>
   );
-}
+} */
+return (
+  <div className="App">
+  <JoursFeries />
+  </div>
+);
 }
 
 export default App;

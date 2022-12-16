@@ -1,84 +1,98 @@
 import JFadmin from "./JFadmin";
+import JFrows from "./JFrows";
 import JFuser from "./JFuser";
 
 export default function JoursFeries(){
     const datatest = [{
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés1"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés2"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés3"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés4"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés5"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés6"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés7"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés8"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés9"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés10"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés11"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés12"
     },
     {
+        id:crypto.randomUUID(),
         date:"02/01/2017",
         type:"RTT",
         jour:"lundi",
-        Contents:"jours fériés"
+        Contents:"jours fériés13"
     }
 ];
 
@@ -89,6 +103,12 @@ if (role == "user") {
         <JFuser datatest={datatest}/>
     );    
 }else{
-    return(<JFadmin datatest={datatest} />);
+    return(
+    <JFadmin datatest={datatest} />
+    
+    );
 }
+
+
 }
+
