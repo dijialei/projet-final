@@ -9,7 +9,7 @@ export default function JoursFeries() {
     const [jfs, setJfs] = useState([]);
 
     const urlBackend = "http://127.0.0.1:3001/";
-    const role = "manager";
+    const role = "user";
     function fetchJF() {
         axios.get(urlBackend + 'jourferie').then((res) => {
             setJfs(res.data);
@@ -64,17 +64,39 @@ export default function JoursFeries() {
     };
 
     function valitation() {
-       if (!selectedJour._id) {
-        delete selectedJour._id;
-        //console.log(selectedJour);
-        axios.post(urlBackend+'addjourferie',selectedJour).then((res)=>{
-            setJfs(res.data);
-        });
-        setSelectedJour(initSelected);        
-       }
+        if (!selectedJour._id) {
+            delete selectedJour._id;
+            //console.log(selectedJour);
+            axios.post(urlBackend + 'addjourferie', selectedJour).then((res) => {
+                setJfs(res.data);
+            });
+            setSelectedJour(initSelected);
+        } else {
+            const newJour = {
+                _id: selectedJour._id
+            };
+            if (selectedJour.date) {
+                newJour.date = selectedJour.date;
+            };
+            if (selectedJour.type) {
+                newJour.type = selectedJour.type;
+            };
+            if (selectedJour.jour) {
+                newJour.jour = selectedJour.jour;
+            };
+            if (selectedJour.libelle) {
+                newJour.libelle=selectedJour.libelle;  
+              };
+              axios.post(urlBackend+'updatejourferie',newJour).then((res)=>{
+                setJfs(res.data);
+              });
+              setSelectedJour(initSelected);
+            
+
+        };
     };
-    function handleDelete(obj){
-        axios.post(urlBackend+'deletejourferie',obj).then((res)=>{
+    function handleDelete(obj) {
+        axios.post(urlBackend + 'deletejourferie', obj).then((res) => {
             setJfs(res.data);
         });
     };
@@ -84,7 +106,7 @@ export default function JoursFeries() {
 
 
     if (selectedJour.type !== "") {
-        return (<AddJF valitation={()=>valitation()} handleType={(e) => handleType(e)} handLibelle={(e) => handLibelle(e)} handleDate={(e) => handleDate(e)} handleAdd={() => handleAdd(initSelected)} selectedJour={selectedJour} />);
+        return (<AddJF valitation={() => valitation()} handleType={(e) => handleType(e)} handLibelle={(e) => handLibelle(e)} handleDate={(e) => handleDate(e)} handleAdd={() => handleAdd(initSelected)} selectedJour={selectedJour} />);
 
     } else if (role === "user") {
         return (
@@ -92,7 +114,7 @@ export default function JoursFeries() {
         );
     } else {
         return (
-            <JFadmin handleDelete={(obj)=>handleDelete(obj)} addJour={addJour} handleAdd={(obj) => handleAdd(obj)} joursferies={jfs} />
+            <JFadmin handleDelete={(obj) => handleDelete(obj)} addJour={addJour} handleAdd={(obj) => handleAdd(obj)} joursferies={jfs} />
 
         );
     }

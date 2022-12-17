@@ -37,7 +37,7 @@ export default function JFuser({ joursferies }) {
                                 joursferies.map(data => {
                                     //console.log(data);
                                     return (
-                                        <tr>
+                                        <tr key={data._id}>
                                             <JFrows key={crypto.randomUUID()} data={data} />
                                         </tr>
                                     );
