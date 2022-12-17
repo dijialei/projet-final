@@ -1,4 +1,6 @@
 import cookie from 'react-cookies';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 export default function AddAbsence({ setAffichage }) {
 
@@ -11,8 +13,19 @@ export default function AddAbsence({ setAffichage }) {
         fin: "",
         status: "EN_ATTENTE",
         type: "",
-        motif: ""
+        motif: "",
+        days: 0
     };
+    const [listJf, setListJF] = useState([]);
+
+    const urlBackend = "http://127.0.0.1:3001/";
+
+    function fetchJF() {
+        axios.get(urlBackend + 'jourferie').then((res) => {
+            setListJF(res.data);
+        })
+    };
+    useEffect(() => { fetchJF() }, []);
 
     /*    const test = "2022-12-30";
        const year = test.split('-');
@@ -37,32 +50,56 @@ export default function AddAbsence({ setAffichage }) {
         const dayBegin = new Date(absence.debut);
         const dayEnd = new Date(absence.fin);
         console.log((dayEnd-dayBegin)/(60*60*24*1000)+1);
-        if (dayBegin <= dayEnd) {
-            return true;
-        } else {
-            return false;
-        };
+        console.log(dayBegin);
+        console.log(dayEnd);
 
+        if (dayBegin > dayEnd) {
+            return "date begin need earlier than date fin";
+        }
+        
     }
+
+    function repos(checkDate) {
+        const week = new Date(checkDate).getDay();
+        const checkJF = listJf.filter(day => day.date == checkDate);
+
+        if (week === 0 || week === 6 || checkJF.length !== 0) {
+            return "Non week-ends fériés ou RTT employeur.";
+        }
+
+
+
+    };
+
     //还要加入所选日期是否为jf rttp 或周六周日
     function handleFin(e) {
         // console.log(e.target.value);
         const errorFin = document.querySelector("#errorFin");
         absence.fin = e.target.value;
         //e.target.value="2022-12-12";
-        if (absence.debut === "") {
+
+
+        if (repos(absence.fin)) {
+            errorFin.className = "text-danger";
+            errorFin.innerHTML = repos(absence.fin);
+            e.target.value = "";
+            absence.fin = "";
+        } else if (absence.debut === "") {
             errorFin.className = "text-success";
             errorFin.innerHTML = "OK";
         } else if (verification()) {
-            errorFin.className = "text-success";
-            errorFin.innerHTML = "OK";
-        } else {
             errorFin.className = "text-danger";
-            errorFin.innerHTML = "date fin need later than date begin";
+            errorFin.innerHTML = verification();
             e.target.value = "";
             absence.fin = "";
-        }
+        } else {
+            errorFin.className = "text-success";
+            errorFin.innerHTML = "OK";
 
+        }
+        function reposCalcul() {
+
+        }
 
     }
     //还要加入所选日期是否为jf rttp 或周六周日
@@ -70,20 +107,27 @@ export default function AddAbsence({ setAffichage }) {
         //console.log(e.target.value);
         const errorDebut = document.querySelector("#errorDebut");
         absence.debut = e.target.value;
-        if (absence.fin === "") {
+        if (repos(absence.debut)) {
+            errorDebut.className = "text-danger";
+            errorDebut.innerHTML = repos(absence.debut);
+            e.target.value = "";
+            absence.debut = "";
+        } else if (absence.fin === "") {
             errorDebut.className = "text-success";
             errorDebut.innerHTML = "OK";
         } else if (verification()) {
-            errorDebut.className = "text-success";
-            errorDebut.innerHTML = "OK";
-        } else {
             errorDebut.className = "text-danger";
-            errorDebut.innerHTML = "date begin need earlier than date fin";
+            errorDebut.innerHTML = verification();
             e.target.value = "";
             absence.debut = "";
+        } else {
+            errorDebut.className = "text-success";
+            errorDebut.innerHTML = "OK";
+
         }
 
     }
+
 
     function handleType(e) {
         //console.log(e.target.value);
@@ -92,7 +136,12 @@ export default function AddAbsence({ setAffichage }) {
         if (absence.type === "css") {
             errorType.className = "text-success";
             errorType.innerHTML = "OK";
-        }
+        } else if (absence.debut === "" || absence.fin === "") {
+            errorType.className = "text-danger";
+            errorType.innerHTML = "Veuillez indiquer les heures de début et de fin";
+            e.target.value = "";
+            absence.type = "";
+        };
     }
     function handleModif(e) {
         //console.log(e.target.value);
@@ -129,7 +178,8 @@ export default function AddAbsence({ setAffichage }) {
                             <tr><td><p id='errorFin'></p></td></tr>
                             <tr>
                                 <td><label htmlFor="type" className="form-label">Type de congé</label></td>
-                                <td><select onChange={(e) => handleType(e)} className="form-select" id="type" name="type" defaultValue="css" >
+                                <td><select onChange={(e) => handleType(e)} className="form-select" id="type" name="type" defaultValue="" >
+                                    <option value="">Sélectionnez le type</option>
                                     <option value="css">Congé sans solde</option>
                                     <option value="cp">Congé payé</option>
                                     <option value="rtt">RTT</option>

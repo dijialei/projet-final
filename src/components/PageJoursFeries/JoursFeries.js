@@ -4,12 +4,14 @@ import JFadmin from "./JFadmin";
 import JFuser from "./JFuser";
 import axios from "axios";
 import AddJF from "./AddJF";
+import cookie from 'react-cookies';
 
 export default function JoursFeries() {
+    
     const [jfs, setJfs] = useState([]);
 
     const urlBackend = "http://127.0.0.1:3001/";
-    const role = "user";
+    
     function fetchJF() {
         axios.get(urlBackend + 'jourferie').then((res) => {
             setJfs(res.data);
@@ -108,7 +110,7 @@ export default function JoursFeries() {
     if (selectedJour.type !== "") {
         return (<AddJF valitation={() => valitation()} handleType={(e) => handleType(e)} handLibelle={(e) => handLibelle(e)} handleDate={(e) => handleDate(e)} handleAdd={() => handleAdd(initSelected)} selectedJour={selectedJour} />);
 
-    } else if (role === "user") {
+    } else if (cookie.load("role") === "user") {
         return (
             <JFuser joursferies={jfs} />
         );

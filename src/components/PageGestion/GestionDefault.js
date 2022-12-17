@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Gestionrows from "./Gestionrows";
+import cookie from 'react-cookies';
 //import './gestiondefault.css'
 export default function GestionDefault({setAffichage}){
     const [datatest, setDataTest] = useState([{
@@ -130,8 +131,8 @@ export default function GestionDefault({setAffichage}){
                     <h6>Soldes des compteurs:</h6>
 
                     <ul>
-                        <li>Congés payés:</li>
-                        <li>RTT:</li>
+                        <li>Congés payés:{cookie.load('cp')}</li>
+                        <li>RTT:{cookie.load('rtt')}</li>
                     </ul>
                 </div>
             </div>

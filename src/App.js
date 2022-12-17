@@ -15,10 +15,10 @@ import ModalDelete from './components/ModalDelete';
 
 function App() {
   //console.log(cookie.load("username"));
-/* const[ login,setLogin] = useState(false);
+const[ login,setLogin] = useState(false);
 if (login || cookie.load("_id")) {
   return(
-    <Accueil/>
+    <Pagegestion/>
   );
   
 }else{
@@ -27,12 +27,12 @@ if (login || cookie.load("_id")) {
     <Login setLogin={()=>setLogin(true)} />
     </div>
   );
-} */
-return (
+}
+/* return (
   <div className="App">
-  <JoursFeries />
+  <Validation />
   </div>
-);
+); */
 }
 
 export default App;
