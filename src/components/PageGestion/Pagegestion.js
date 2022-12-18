@@ -26,7 +26,7 @@ export default function Pagegestion() {
         default:
             return (
                 <>
-                    <GestionDefault setAffichage={(newState)=>setAffichage(newState)}  />
+                    <GestionDefault affichage={affichage} setAffichage={(newState)=>setAffichage(newState)}  />
                 </>
             );
     }

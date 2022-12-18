@@ -1,95 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Gestionrows from "./Gestionrows";
 import cookie from 'react-cookies';
+import axios from "axios";
 //import './gestiondefault.css'
-export default function GestionDefault({setAffichage}){
-    const [datatest, setDataTest] = useState([{
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    },
-    {
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    },
-    {
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    },
-    {
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    },
-    {
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    },
-    {
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    },
-    {
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    },
-    {
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    },
-    {
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    },
-    {
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    },
-    {
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    },
-    {
-        id: crypto.randomUUID(),
-        debut: "12/12/2022",
-        fin: "12/12/2022",
-        type: "Congés payés",
-        state: "validee"
-    }
-    ]);
+export default function GestionDefault({affichage,setAffichage}){
+    const [absenceList, setAbsenceList] = useState([]);
 
+function fetchAbsence(){    
+        axios.post('http://127.0.0.1:3001/absence',{userId:cookie.load("_id")}).then((res) => {
+            setAbsenceList(res.data);
+    });
+};
 
+useEffect(() => { fetchAbsence() }, [affichage]);
 
 
     return (
@@ -105,15 +28,15 @@ export default function GestionDefault({setAffichage}){
                                 <th ><strong>Date de début</strong></th>
                                 <th ><strong>Date de fin</strong></th>
                                 <th ><strong>Type</strong></th>
-                                <th ><strong>State</strong></th>
+                                <th ><strong>Status</strong></th>
                                 <th ><strong>Action</strong></th>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                datatest.map(data => {
+                                absenceList.map(data => {
                                     //console.log(data);
-                                    return (<Gestionrows key={data.id} data={data} setAffichage={(newState)=>setAffichage(newState)}/>);
+                                    return (<Gestionrows key={data._id} data={data} setAffichage={(newState)=>setAffichage(newState)}/>);
                                 })
                             }
                         </tbody>
