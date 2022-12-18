@@ -32,6 +32,9 @@ export default function Login({setLogin}) {
                 cookie.save("rtt",res.data.rtt,{path:'/'});                
                 cookie.save("rttp",res.data.rttp,{path:'/'});
                 cookie.save("cp",res.data.cp,{path:'/'});
+                /* console.log(typeof(cookie.load("cp")));
+                console.log(typeof(res.data.cp));
+ */
                 setLogin();
                
              }else{

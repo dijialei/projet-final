@@ -1,4 +1,4 @@
-export default function Gestionrows({ data,setAffichage }) {
+export default function Gestionrows({ setSelectedAb,data,setAffichage }) {
     //console.log(data);
     return (
         
@@ -8,7 +8,7 @@ export default function Gestionrows({ data,setAffichage }) {
                 <td>{data.type}</td>
                 <td>{data.status}</td>
                 <td><a onClick={()=>setAffichage("modify")} className="btn btn-sm btn-info me-1">✎</a>
-                    <a className="btn btn-sm btn-danger">✖︎</a>
+                    <a onClick={()=>setSelectedAb()} className="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">✖︎</a>
                 </td>
             </tr>
         

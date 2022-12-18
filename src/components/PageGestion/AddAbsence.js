@@ -144,7 +144,7 @@ export default function AddAbsence({ setAffichage }) {
             errorType.className = "text-success";
             errorType.innerHTML = "OK";
         }
-        else if (absence.days > cookie.load(absence.type)) {
+        else if (absence.days > parseInt(cookie.load(absence.type))) {
             errorType.className = "text-danger";
             errorType.innerHTML = "Nombre de jours restants insuffisant";
             e.target.value = "";
@@ -164,6 +164,7 @@ export default function AddAbsence({ setAffichage }) {
         errorMotif.innerHTML = "OK"
     }
     function validation() {
+
         const errorMotif = document.querySelector("#errorMotif");
         const errorType = document.querySelector("#errorType");
         const errorValider = document.querySelector("#errorValider");
@@ -175,7 +176,7 @@ export default function AddAbsence({ setAffichage }) {
         } else if (absence.type === "css" && absence.motif === "") {
             errorMotif.className = "text-danger";
             errorMotif.innerHTML = "Congé sans solde Motif est obligatoire"
-        } else if (absence.days > cookie.load(absence.type)) {
+        } else if (absence.days > parseInt(cookie.load(absence.type))) {
             errorType.className = "text-danger";
             errorType.innerHTML = "Nombre de jours restants insuffisant";
         }else if (absence.type === "css") {
@@ -190,9 +191,12 @@ export default function AddAbsence({ setAffichage }) {
            
             setAffichage("default");
         }else {
-            cookie.save(absence.type,cookie.load(absence.type)-absence.days);
+           /*  console.log(typeof(cookie.load(absence.type)));
+            console.log(typeof(absence.days)); */
+
+            cookie.save(absence.type,parseInt(cookie.load(absence.type))-absence.days);
             axios.post(urlBackend+'createAbsence',absence);
-            axios.post(urlBackend+'updateUser',{_id: cookie.load("_id"),cp:cookie.load("cp"),rtt:cookie.load("rtt")});
+            axios.post(urlBackend+'updateUser',{_id: cookie.load("_id"),cp:parseInt(cookie.load("cp")),rtt:parseInt(cookie.load("rtt"))});
             setAffichage("default");
         };
 

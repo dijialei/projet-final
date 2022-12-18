@@ -2,17 +2,33 @@ import { useState, useEffect } from "react";
 import Gestionrows from "./Gestionrows";
 import cookie from 'react-cookies';
 import axios from "axios";
+import ModalDeleteGDA from "./ModalDeleteGDA";
 //import './gestiondefault.css'
-export default function GestionDefault({affichage,setAffichage}){
+export default function GestionDefault({ affichage, setAffichage }) {
     const [absenceList, setAbsenceList] = useState([]);
-
-function fetchAbsence(){    
-        axios.post('http://127.0.0.1:3001/absence',{userId:cookie.load("_id")}).then((res) => {
+    const [selectedAb, setSelectedAb] = useState({});
+    function fetchAbsence() {
+        axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
             setAbsenceList(res.data);
-    });
-};
+        });
+    };
 
-useEffect(() => { fetchAbsence() }, [affichage]);
+    useEffect(() => { fetchAbsence() }, [affichage]);
+
+    function handleDelete() {
+       /*  console.log(typeof(cookie.load(selectedAb.type)));
+        console.log(typeof(selectedAb.days));
+        console.log(selectedAb.days+parseInt(cookie.load(selectedAb.type))); */
+        
+        axios.post('http://127.0.0.1:3001/deleteAbsence', selectedAb).then((res)=>{
+            if (selectedAb.type !== "css") {
+                cookie.save(selectedAb.type,(parseInt(cookie.load(selectedAb.type)) + selectedAb.days));
+                axios.post('http://127.0.0.1:3001/updateUser',{_id: cookie.load("_id"),cp: parseInt(cookie.load("cp")),rtt:parseInt(cookie.load("rtt"))});
+            };
+            setAbsenceList(res.data);
+        });
+        
+    };
 
 
     return (
@@ -36,7 +52,7 @@ useEffect(() => { fetchAbsence() }, [affichage]);
                             {
                                 absenceList.map(data => {
                                     //console.log(data);
-                                    return (<Gestionrows key={data._id} data={data} setAffichage={(newState)=>setAffichage(newState)}/>);
+                                    return (<Gestionrows key={data._id} setSelectedAb={() => setSelectedAb(data)} data={data} setAffichage={(newState) => setAffichage(newState)} />);
                                 })
                             }
                         </tbody>
@@ -44,7 +60,7 @@ useEffect(() => { fetchAbsence() }, [affichage]);
 
                 </div>
                 <div className="d-flex flex-row-reverse align-items-center w-75 mt-5">
-                    <a onClick={()=>setAffichage("add")} className="btn btn-sm btn-info me-1"><span className="material-symbols-outlined">
+                    <a onClick={() => setAffichage("add")} className="btn btn-sm btn-info me-1"><span className="material-symbols-outlined">
                         add
                     </span>
                     </a>
@@ -58,6 +74,7 @@ useEffect(() => { fetchAbsence() }, [affichage]);
                         <li>RTT:{cookie.load('rtt')}</li>
                     </ul>
                 </div>
+                <ModalDeleteGDA selectedAb={selectedAb} handleDelete={() => handleDelete()} />
             </div>
 
 
