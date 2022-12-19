@@ -7,7 +7,7 @@ export default function Gestionrows({ setSelectedAb,data,setAffichage }) {
                 <td>{data.fin}</td>
                 <td>{data.type}</td>
                 <td>{data.status}</td>
-                <td><a onClick={()=>setAffichage("modify")} className="btn btn-sm btn-info me-1">✎</a>
+                <td><a onClick={()=>setAffichage("add")} className="btn btn-sm btn-info me-1">✎</a>
                     <a onClick={()=>setSelectedAb()} className="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">✖︎</a>
                 </td>
             </tr>

@@ -15,6 +15,7 @@ import GestionDefault from './components/PageGestion/GestionDefault';
 
 function App() {
   //console.log(cookie.load("username"));
+  const [page,setPage] = useState("");
   const [login, setLogin] = useState(false);
   if (login || cookie.load("_id")) {
     return (

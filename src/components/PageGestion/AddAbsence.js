@@ -170,6 +170,8 @@ export default function AddAbsence({ setAbsenceList, setAffichage }) {
         const errorMotif = document.querySelector("#errorMotif");
         const errorType = document.querySelector("#errorType");
         const errorValider = document.querySelector("#errorValider");
+        let resultCreateAbs;
+        let resultUpD;
 
 
         if (absence.debut === "" || absence.fin === "" || absence.type === "") {
@@ -189,30 +191,44 @@ export default function AddAbsence({ setAbsenceList, setAffichage }) {
             cookie.save(absence.type,cookie.load(absence.type)-absence.days);
             console.log(cookie.load(absence.type)); */
             console.log("validation");
-            axios.post(urlBackend + 'createAbsence', absence);
+            resultCreateAbs = await axios.post(urlBackend + 'createAbsence', absence);
+            console.log(resultCreateAbs);
+            if (resultCreateAbs.status === 200) {
+                axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
 
-            axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
-                setAffichage("default");
-                setAbsenceList(res.data);
+                    setAbsenceList(res.data);
+                    
 
 
-            });
+                });
+                
+
+            }
+            setAffichage("default");
         } else {
             /*  console.log(typeof(cookie.load(absence.type)));
              console.log(typeof(absence.days)); */
-            
+
             cookie.save(absence.type, parseInt(cookie.load(absence.type)) - absence.days);
-            axios.post(urlBackend + 'createAbsence', absence);
-            axios.post(urlBackend + 'updateUser', { _id: cookie.load("_id"), cp: parseInt(cookie.load("cp")), rtt: parseInt(cookie.load("rtt")) });
-            axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
-               
-                setAbsenceList(res.data);
+            resultCreateAbs = await axios.post(urlBackend + 'createAbsence', absence);
+            if (resultCreateAbs.status === 200) {
+                resultUpD = await axios.post(urlBackend + 'updateUser', { _id: cookie.load("_id"), cp: parseInt(cookie.load("cp")), rtt: parseInt(cookie.load("rtt")) });
+                if (resultUpD.status === 200) {
+                    axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
+
+                        setAbsenceList(res.data);
 
 
-            });
+                    });
+                }
+
+            }
             setAffichage("default");
-            console.log("validation");
+            console.log("validation setAffichage");
+
+
         };
+
 
 
     }

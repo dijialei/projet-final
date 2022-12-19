@@ -10,7 +10,7 @@ export default function GestionDefault() {
     const [absenceList, setAbsenceList] = useState([]);
     const [selectedAb, setSelectedAb] = useState({});
     const [affichage, setAffichage] = useState("");
-console.log(selectedAb);
+   
     function fetchAbsence() {
         axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
             setAbsenceList(res.data);
@@ -24,18 +24,23 @@ console.log(selectedAb);
         /*  console.log(typeof(cookie.load(selectedAb.type)));
          console.log(typeof(selectedAb.days));
          console.log(selectedAb.days+parseInt(cookie.load(selectedAb.type))); */
-        console.log("selectedAb:(handelDelete)" + selectedAb);
-        axios.post('http://127.0.0.1:3001/deleteAbsence', selectedAb);
+        let resultDel;
+        let resultUp;
+        
+        resultDel = await axios.post('http://127.0.0.1:3001/deleteAbsence', selectedAb);
+        console.log("resultDel");
+        if (resultDel.status === 200) {
+            if (selectedAb.type !== "css") {
+                cookie.save(selectedAb.type, (parseInt(cookie.load(selectedAb.type)) + selectedAb.days));
+                resultUp = await axios.post('http://127.0.0.1:3001/updateUser', { _id: cookie.load("_id"), cp: parseInt(cookie.load("cp")), rtt: parseInt(cookie.load("rtt")) });
+                console.log(resultUp);
+            }
 
-        if (selectedAb.type !== "css") {
-            cookie.save(selectedAb.type, (parseInt(cookie.load(selectedAb.type)) + selectedAb.days));
-            axios.post('http://127.0.0.1:3001/updateUser', { _id: cookie.load("_id"), cp: parseInt(cookie.load("cp")), rtt: parseInt(cookie.load("rtt")) });
-
-        }
-        axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
-            setAbsenceList(res.data);
-            console.log("handleDelete()");
-        });
+            axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
+                setAbsenceList(res.data);
+                
+            });
+        };
 
 
 
