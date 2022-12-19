@@ -8,17 +8,47 @@ import ModifyAbsence from "./ModifyAbsence";
 //import './gestiondefault.css'
 export default function GestionDefault() {
     const [absenceList, setAbsenceList] = useState([]);
-    const [selectedAb, setSelectedAb] = useState({});
-    const [affichage, setAffichage] = useState("");
-   
+    const [affichage, setAffichage] = useState("default")
+    const [selectedAb, setSelectedAb] = useState({
+        _id: "",
+        userId: "",
+        userName: "",
+        debut: "",
+        fin: "",
+        status: "",
+        type: "",
+        motif: "",
+        days: 0
+    });
+    const initSelAbs = {
+        _id: "",
+        userId: "",
+        userName: "",
+        debut: "",
+        fin: "",
+        status: "",
+        type: "",
+        motif: "",
+        days: 0
+    };
+    /* console.log(!selectedAb.id);
+    selectedAb.id =12;
+    selectedAb.type = "test";
+    console.log(selectedAb);
+    useEffect(() => { setSelectedAb(initSelAbs) }, []);
+    console.log(selectedAb); */
+
     function fetchAbsence() {
         axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
             setAbsenceList(res.data);
-            console.log("fetchAbsence()");
-        });
-    };
+            
 
+        });
+        
+    };
+    
     useEffect(() => { fetchAbsence() }, []);
+
 
     async function handleDelete() {
         /*  console.log(typeof(cookie.load(selectedAb.type)));
@@ -26,7 +56,7 @@ export default function GestionDefault() {
          console.log(selectedAb.days+parseInt(cookie.load(selectedAb.type))); */
         let resultDel;
         let resultUp;
-        
+
         resultDel = await axios.post('http://127.0.0.1:3001/deleteAbsence', selectedAb);
         console.log("resultDel");
         if (resultDel.status === 200) {
@@ -38,7 +68,8 @@ export default function GestionDefault() {
 
             axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
                 setAbsenceList(res.data);
-                
+
+                setSelectedAb(initSelAbs);
             });
         };
 
@@ -48,19 +79,15 @@ export default function GestionDefault() {
 
 
 
+
     switch (affichage) {
         case "add":
             return (
                 <>
-                    <AddAbsence setAbsenceList={(newData) => setAbsenceList(newData)} setAffichage={(newState) => setAffichage(newState)} />
+                    <AddAbsence setAffichage={(newState)=>setAffichage(newState)} setAbsenceList={(newData) => setAbsenceList(newData)} selectedAb={selectedAb} setSelectedAb={()=>setSelectedAb(initSelAbs)}  />
                 </>
             );
-        case "modify":
-            return (
-                <>
-                    <ModifyAbsence setAffichage={(newState) => setAffichage(newState)} />
-                </>
-            );
+
         default:
 
             return (
@@ -84,7 +111,7 @@ export default function GestionDefault() {
                                     {
                                         absenceList.map(data => {
                                             //console.log(data);
-                                            return (<Gestionrows key={data._id} setSelectedAb={() => setSelectedAb(data)} data={data} setAffichage={(newState) => setAffichage(newState)} />);
+                                            return (<Gestionrows key={data._id} setSelectedAb={() => setSelectedAb(data)} data={data} setAffichage={(newState)=>setAffichage(newState)}/>);
                                         })
                                     }
                                 </tbody>
@@ -108,11 +135,13 @@ export default function GestionDefault() {
                         </div>
 
                     </div>
-                    <div><ModalDeleteGDA selectedAb={selectedAb} handleDelete={() => handleDelete()} /></div>
+                    <div><ModalDeleteGDA setSelectedAb={() => setSelectedAb(initSelAbs)} selectedAb={selectedAb} handleDelete={() => handleDelete()} /></div>
 
 
                 </>
             );
+
+
     }
 
 }

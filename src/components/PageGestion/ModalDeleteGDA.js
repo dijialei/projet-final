@@ -1,5 +1,4 @@
-export default function ModalDeleteGDA({selectedAb,handleDelete}) {
-    //console.log(deleteJour);
+export default function ModalDeleteGDA({setSelectedAb,selectedAb,handleDelete}) {
     
     return (
         <>           
@@ -17,7 +16,7 @@ export default function ModalDeleteGDA({selectedAb,handleDelete}) {
                             <p>Type de congé : {selectedAb.type}</p>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button onClick={()=>setSelectedAb()} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button onClick={()=>handleDelete()} type="button" className="btn btn-danger" data-bs-dismiss="modal" >Supprimer</button>
                         </div>
                     </div>

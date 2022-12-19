@@ -2,11 +2,14 @@ import cookie from 'react-cookies';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-export default function AddAbsence({ setAbsenceList, setAffichage }) {
+export default function AddAbsence({ setAffichage, selectedAb, setSelectedAb, setAbsenceList }) {
 
     //判断点击add还是modify返回不同页面
-
-    const [absence, setAbsence] = useState({
+    const days = selectedAb.days;
+    
+    let title = "";
+    let action = "";
+    let absence = {
         userId: cookie.load("_id"),
         userName: cookie.load("name"),
         debut: "",
@@ -15,7 +18,20 @@ export default function AddAbsence({ setAbsenceList, setAffichage }) {
         type: "",
         motif: "",
         days: 0
-    });
+    };
+    if (selectedAb._id === "") {
+        title = "Demande d'absence";
+        action = "add";
+    } else {
+        title = "Modifier d'absence";
+        action = "modifier";
+        absence = Object.assign({}, selectedAb)
+
+    };
+
+
+
+
     const initAbsence = {
         userId: cookie.load("_id"),
         userName: cookie.load("name"),
@@ -35,9 +51,16 @@ export default function AddAbsence({ setAbsenceList, setAffichage }) {
     function fetchJF() {
         axios.get(urlBackend + 'jourferie').then((res) => {
             setListJF(res.data);
+
+
         })
+
     };
-    useEffect(() => { fetchJF() }, []);
+    useEffect(() => {
+        fetchJF();
+    }, []);
+    console.log(absence);
+
 
 
 
@@ -146,7 +169,7 @@ export default function AddAbsence({ setAbsenceList, setAffichage }) {
             errorType.className = "text-success";
             errorType.innerHTML = "OK";
         }
-        else if (absence.days > parseInt(cookie.load(absence.type))) {
+        else if (absence.days > (parseInt(cookie.load(absence.type))+days)) {
             errorType.className = "text-danger";
             errorType.innerHTML = "Nombre de jours restants insuffisant";
             e.target.value = "";
@@ -172,6 +195,7 @@ export default function AddAbsence({ setAbsenceList, setAffichage }) {
         const errorValider = document.querySelector("#errorValider");
         let resultCreateAbs;
         let resultUpD;
+        let resultModify;
 
 
         if (absence.debut === "" || absence.fin === "" || absence.type === "") {
@@ -183,51 +207,63 @@ export default function AddAbsence({ setAbsenceList, setAffichage }) {
         } else if (absence.days > parseInt(cookie.load(absence.type))) {
             errorType.className = "text-danger";
             errorType.innerHTML = "Nombre de jours restants insuffisant";
-        } else if (absence.type === "css") {
+        } else if (action === "add") {
+            if (absence.type === "css") {
 
 
-            /* console.log(absence);
-            console.log(cookie.load(absence.type));
-            cookie.save(absence.type,cookie.load(absence.type)-absence.days);
-            console.log(cookie.load(absence.type)); */
-            console.log("validation");
-            resultCreateAbs = await axios.post(urlBackend + 'createAbsence', absence);
-            console.log(resultCreateAbs);
-            if (resultCreateAbs.status === 200) {
-                axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
+                /* console.log(absence);
+                console.log(cookie.load(absence.type));
+                cookie.save(absence.type,cookie.load(absence.type)-absence.days);
+                console.log(cookie.load(absence.type)); */
 
-                    setAbsenceList(res.data);
-                    
-
-
-                });
-                
-
-            }
-            setAffichage("default");
-        } else {
-            /*  console.log(typeof(cookie.load(absence.type)));
-             console.log(typeof(absence.days)); */
-
-            cookie.save(absence.type, parseInt(cookie.load(absence.type)) - absence.days);
-            resultCreateAbs = await axios.post(urlBackend + 'createAbsence', absence);
-            if (resultCreateAbs.status === 200) {
-                resultUpD = await axios.post(urlBackend + 'updateUser', { _id: cookie.load("_id"), cp: parseInt(cookie.load("cp")), rtt: parseInt(cookie.load("rtt")) });
-                if (resultUpD.status === 200) {
+                resultCreateAbs = await axios.post(urlBackend + 'createAbsence', absence);
+                console.log(resultCreateAbs);
+                if (resultCreateAbs.status === 200) {
                     axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
 
                         setAbsenceList(res.data);
 
+                        setSelectedAb();
 
                     });
+
+
                 }
+                setAffichage("");
 
-            }
-            setAffichage("default");
-            console.log("validation setAffichage");
+            } else {
+                /*  console.log(typeof(cookie.load(absence.type)));
+                 console.log(typeof(absence.days)); */
+
+                cookie.save(absence.type, parseInt(cookie.load(absence.type)) - absence.days);
+                resultCreateAbs = await axios.post(urlBackend + 'createAbsence', absence);
+                if (resultCreateAbs.status === 200) {
+                    resultUpD = await axios.post(urlBackend + 'updateUser', { _id: cookie.load("_id"), cp: parseInt(cookie.load("cp")), rtt: parseInt(cookie.load("rtt")) });
+                    if (resultUpD.status === 200) {
+                        axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
+
+                            setAbsenceList(res.data);
+
+                            setSelectedAb();
+                        });
+                    }
+
+                }
+                setAffichage("");
 
 
-        };
+
+            };
+        } else {
+            console.log(absence);
+            console.log(selectedAb);
+           /*  resultModify = await axios.post('http://127.0.0.1:3001/updateAbsence', absence);
+            
+            if (resultModify.status === 200) {
+                
+
+            } */
+        }
 
 
 
@@ -236,10 +272,13 @@ export default function AddAbsence({ setAbsenceList, setAffichage }) {
 
 
 
+
+
+
     return (
 
         <div className="container d-flex flex-column align-items-center">
-            <div className="row "><h4>Demande d'absence</h4></div>
+            <div className="row "><h4>{title}</h4></div>
             <div className="row w-75 ">
                 <form action="" className="w-75">
 
@@ -248,18 +287,18 @@ export default function AddAbsence({ setAbsenceList, setAffichage }) {
                         <tbody>
                             <tr>
                                 <td><label htmlFor="debut" className="form-label">Date de début</label></td>
-                                <td><input onChange={(e) => handleDebut(e)} type="date" className="form-control" id="debut" name="debut" defaultValue="" /></td>
+                                <td><input onChange={(e) => handleDebut(e)} type="date" className="form-control" id="debut" name="debut" defaultValue={selectedAb.debut} /></td>
 
                             </tr>
                             <tr><td colSpan="2"><p id='errorDebut'></p></td></tr>
                             <tr>
                                 <td><label htmlFor="fin" className="form-label">Date de fin</label></td>
-                                <td><input onChange={(e) => handleFin(e)} type="date" className="form-control" id="fin" name="fin" defaultValue="" /></td>
+                                <td><input onChange={(e) => handleFin(e)} type="date" className="form-control" id="fin" name="fin" defaultValue={selectedAb.fin} /></td>
                             </tr>
                             <tr><td colSpan="2"><p id='errorFin'></p></td></tr>
                             <tr>
                                 <td><label htmlFor="type" className="form-label">Type de congé</label></td>
-                                <td><select onChange={(e) => handleType(e)} className="form-select" id="type" name="type" defaultValue="" >
+                                <td><select onChange={(e) => handleType(e)} className="form-select" id="type" name="type" defaultValue={selectedAb.type} >
                                     <option value="">Sélectionnez le type</option>
                                     <option value="css">Congé sans solde</option>
                                     <option value="cp">Congé payé</option>
@@ -270,7 +309,7 @@ export default function AddAbsence({ setAbsenceList, setAffichage }) {
                             <tr><td colSpan="2"><p id='errorType'></p></td></tr>
                             <tr>
                                 <td><label htmlFor="motif" className="form-label">Motif</label></td>
-                                <td><textarea onChange={(e) => handleModif(e)} className="form-control" id="motif" name="motif" rows="5"></textarea></td>
+                                <td><textarea onChange={(e) => handleModif(e)} className="form-control" id="motif" name="motif" rows="5" defaultValue={selectedAb.motif} ></textarea></td>
 
                             </tr>
                             <tr><td colSpan="2"><p id='errorMotif'></p></td></tr>
@@ -281,7 +320,7 @@ export default function AddAbsence({ setAbsenceList, setAffichage }) {
                     <p id='errorValider'></p>
                     <div className="d-flex flex-row justify-content-evenly m-2">
 
-                        <input onClick={() => setAffichage("default")} type="reset" className="btn btn-danger" value="Annuler" />
+                        <input onClick={() => { setAffichage(""); setSelectedAb() }} type="reset" className="btn btn-danger" value="Annuler" />
                         <input onClick={() => validation()} type="button" className="btn btn-success" value="Valider" />
                     </div>
 
