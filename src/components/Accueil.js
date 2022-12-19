@@ -4,5 +4,5 @@ export default function Accueil() {
         console.log(cookie.load("userName")); */
     //console.log(cookie.load("_id"));
 
-    return (<>hello world!</>);
+    return (<></>);
 }

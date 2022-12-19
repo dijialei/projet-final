@@ -2,7 +2,7 @@ import cookie from 'react-cookies';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-export default function AddAbsence({ setAffichage }) {
+export default function AddAbsence({ setAbsenceList, setAffichage }) {
 
     //判断点击add还是modify返回不同页面
 
@@ -29,6 +29,8 @@ export default function AddAbsence({ setAffichage }) {
     const [listJf, setListJF] = useState([]);
 
     const urlBackend = "http://127.0.0.1:3001/";
+
+    //console.log(absence);
 
     function fetchJF() {
         axios.get(urlBackend + 'jourferie').then((res) => {
@@ -163,14 +165,14 @@ export default function AddAbsence({ setAffichage }) {
         errorMotif.className = "text-success";
         errorMotif.innerHTML = "OK"
     }
-    function validation() {
+    async function validation() {
 
         const errorMotif = document.querySelector("#errorMotif");
         const errorType = document.querySelector("#errorType");
         const errorValider = document.querySelector("#errorValider");
-        
-        
-        if (absence.debut ==="" || absence.fin ==="" || absence.type === "") {
+
+
+        if (absence.debut === "" || absence.fin === "" || absence.type === "") {
             errorValider.className = "text-danger";
             errorValider.innerHTML = "Date de début,Date de fin,Type de congé sont obligatoire";
         } else if (absence.type === "css" && absence.motif === "") {
@@ -179,25 +181,37 @@ export default function AddAbsence({ setAffichage }) {
         } else if (absence.days > parseInt(cookie.load(absence.type))) {
             errorType.className = "text-danger";
             errorType.innerHTML = "Nombre de jours restants insuffisant";
-        }else if (absence.type === "css") {
-            
-        
+        } else if (absence.type === "css") {
+
+
             /* console.log(absence);
             console.log(cookie.load(absence.type));
             cookie.save(absence.type,cookie.load(absence.type)-absence.days);
             console.log(cookie.load(absence.type)); */
-            
-            axios.post(urlBackend+'createAbsence',absence);
-           
-            setAffichage("default");
-        }else {
-           /*  console.log(typeof(cookie.load(absence.type)));
-            console.log(typeof(absence.days)); */
+            console.log("validation");
+            axios.post(urlBackend + 'createAbsence', absence);
 
-            cookie.save(absence.type,parseInt(cookie.load(absence.type))-absence.days);
-            axios.post(urlBackend+'createAbsence',absence);
-            axios.post(urlBackend+'updateUser',{_id: cookie.load("_id"),cp:parseInt(cookie.load("cp")),rtt:parseInt(cookie.load("rtt"))});
+            axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
+                setAffichage("default");
+                setAbsenceList(res.data);
+
+
+            });
+        } else {
+            /*  console.log(typeof(cookie.load(absence.type)));
+             console.log(typeof(absence.days)); */
+            
+            cookie.save(absence.type, parseInt(cookie.load(absence.type)) - absence.days);
+            axios.post(urlBackend + 'createAbsence', absence);
+            axios.post(urlBackend + 'updateUser', { _id: cookie.load("_id"), cp: parseInt(cookie.load("cp")), rtt: parseInt(cookie.load("rtt")) });
+            axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
+               
+                setAbsenceList(res.data);
+
+
+            });
             setAffichage("default");
+            console.log("validation");
         };
 
 
@@ -250,7 +264,7 @@ export default function AddAbsence({ setAffichage }) {
 
                     <p id='errorValider'></p>
                     <div className="d-flex flex-row justify-content-evenly m-2">
-                        
+
                         <input onClick={() => setAffichage("default")} type="reset" className="btn btn-danger" value="Annuler" />
                         <input onClick={() => validation()} type="button" className="btn btn-success" value="Valider" />
                     </div>
