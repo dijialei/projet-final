@@ -37,9 +37,10 @@ export default function AddJF({selectedJour,handleAdd,handLibelle,handleType,han
                         </tbody>
                     </table>
 
-
+                    <div><p id = "errorValider" ></p></div>
 
                     <div className="d-flex flex-row justify-content-evenly m-2">
+                        
                         <input onClick={()=>handleAdd()} type="reset" className="btn btn-danger" value="Annuler" />
                         <input onClick={()=>valitation()} type="reset" className="btn btn-success" value="Valider" />
                     </div>

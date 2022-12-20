@@ -59,7 +59,7 @@ export default function AddAbsence({ setAffichage, selectedAb, setSelectedAb, se
     useEffect(() => {
         fetchJF();
     }, []);
-    console.log(absence);
+    
 
 
 
