@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 export default function AddAbsence({ setAffichage, selectedAb, setSelectedAb, setAbsenceList }) {
 
     //判断点击add还是modify返回不同页面
-    const days = selectedAb.days;
-    
+    const days = 0;
+
     let title = "";
     let action = "";
     let absence = {
@@ -160,6 +160,9 @@ export default function AddAbsence({ setAffichage, selectedAb, setSelectedAb, se
         //console.log(e.target.value);
         const errorType = document.querySelector("#errorType");
         absence.type = e.target.value;
+        if (absence.type === selectedAb.type && selectedAb.type !== "css") {
+            days = selectedAb.days;
+        } else { days = 0; }
         if (absence.debut === "" || absence.fin === "") {
             errorType.className = "text-danger";
             errorType.innerHTML = "Veuillez indiquer les dates de début et de fin";
@@ -169,7 +172,7 @@ export default function AddAbsence({ setAffichage, selectedAb, setSelectedAb, se
             errorType.className = "text-success";
             errorType.innerHTML = "OK";
         }
-        else if (absence.days > (parseInt(cookie.load(absence.type))+days)) {
+        else if (absence.days > (parseInt(cookie.load(absence.type)) + days)) {
             errorType.className = "text-danger";
             errorType.innerHTML = "Nombre de jours restants insuffisant";
             e.target.value = "";
@@ -217,7 +220,7 @@ export default function AddAbsence({ setAffichage, selectedAb, setSelectedAb, se
                 console.log(cookie.load(absence.type)); */
 
                 resultCreateAbs = await axios.post(urlBackend + 'createAbsence', absence);
-                console.log(resultCreateAbs);
+
                 if (resultCreateAbs.status === 200) {
                     axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
 
@@ -255,14 +258,31 @@ export default function AddAbsence({ setAffichage, selectedAb, setSelectedAb, se
 
             };
         } else {
-            console.log(absence);
-            console.log(selectedAb);
-           /*  resultModify = await axios.post('http://127.0.0.1:3001/updateAbsence', absence);
-            
-            if (resultModify.status === 200) {
-                
 
-            } */
+            //console.log(absence);
+            //console.log(selectedAb);
+            resultModify = await axios.post('http://127.0.0.1:3001/updateAbsence', absence);
+            if (resultModify.status === 200) {
+                if (selectedAb.type !== "css") {
+                    cookie.save(selectedAb.type, parseInt(cookie.load(selectedAb.type)) + selectedAb.days);
+                }
+
+                if (absence.type !== "css") {
+                    cookie.save(absence.type, parseInt(cookie.load(absence.type)) - absence.days);
+                }
+                resultUpD = await axios.post(urlBackend + 'updateUser', { _id: cookie.load("_id"), cp: parseInt(cookie.load("cp")), rtt: parseInt(cookie.load("rtt")) });
+                if (resultUpD.status === 200) {
+                    axios.post('http://127.0.0.1:3001/absence', { userId: cookie.load("_id") }).then((res) => {
+
+                        setAbsenceList(res.data);
+
+
+                    });
+                }
+
+            }
+            setSelectedAb();
+            setAffichage("");
         }
 
 
